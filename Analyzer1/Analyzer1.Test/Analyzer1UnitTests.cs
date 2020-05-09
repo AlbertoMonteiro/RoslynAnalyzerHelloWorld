@@ -133,6 +133,27 @@ namespace Analyzer1.Test
             VerifyCSharpDiagnostic(test);
         }
 
+        [TestMethod]
+        public void TestMethod5()
+        {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+    
+    namespace ConsoleApplication2
+    {
+        class TypeName
+        {
+        }
+    }";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
             return new Analyzer1CodeFixProvider();

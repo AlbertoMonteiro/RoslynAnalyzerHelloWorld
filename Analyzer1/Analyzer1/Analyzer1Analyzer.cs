@@ -37,6 +37,13 @@ namespace Analyzer1
             if (identifierText == "NotValidatableAttribute")
                 return;
 
+            var @namespace = classDeclaration.Ancestors()
+                .OfType<NamespaceDeclarationSyntax>()
+                .FirstOrDefault();
+
+            if (@namespace?.Name is IdentifierNameSyntax identifier && identifier.Identifier.Text != "ConsoleApplication1")
+                return;
+
             var isNotValidatable = classDeclaration.AttributeLists
                 .SelectMany(x => x.Attributes)
                 .Select(x => x.Name)
