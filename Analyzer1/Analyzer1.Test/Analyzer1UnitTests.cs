@@ -24,23 +24,23 @@ namespace Analyzer1.Test
         public void TestMethod2()
         {
             var test = @"
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-
-namespace ConsoleApplication1
-{
-    interface IValidatable
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+    
+    namespace ConsoleApplication1
     {
-    }
-
-    class TypeName
-    {
-    }
-}";
+        interface IValidatable
+        {
+        }
+    
+        class TypeName
+        {
+        }
+    }";
             var expected = new DiagnosticResult
             {
                 Id = "MissingValidator",
@@ -55,23 +55,23 @@ namespace ConsoleApplication1
             VerifyCSharpDiagnostic(test, expected);
 
             var fixtest = @"
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-
-namespace ConsoleApplication1
-{
-    interface IValidatable
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+    
+    namespace ConsoleApplication1
     {
-    }
-
-    class TypeName : IValidatable
-    {
-    }
-}";
+        interface IValidatable
+        {
+        }
+    
+        class TypeName : IValidatable
+        {
+        }
+    }";
             VerifyCSharpFix(test, fixtest);
         }
 

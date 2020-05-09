@@ -44,7 +44,7 @@ namespace Analyzer1
 
             var identifierName = SyntaxFactory.IdentifierName("IValidatable")
                 .WithLeadingTrivia(SyntaxFactory.Whitespace(" "))
-                .WithTrailingTrivia(SyntaxFactory.LineFeed);
+                .WithTrailingTrivia(SyntaxFactory.CarriageReturnLineFeed);
             var simpleBaseTypeSyntax = SyntaxFactory.SimpleBaseType(identifierName);
             var newClass = typeDecl
                 .ReplaceToken(typeDecl.Identifier, typeDecl.Identifier.WithTrailingTrivia(SyntaxFactory.Whitespace(" ")))
