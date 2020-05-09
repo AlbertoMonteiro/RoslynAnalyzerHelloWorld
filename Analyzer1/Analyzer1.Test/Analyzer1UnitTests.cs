@@ -43,7 +43,7 @@ namespace Analyzer1.Test
     }";
             var expected = new DiagnosticResult
             {
-                Id = "MissingValidator",
+                Id = DiagnosticId.MissingIValidatable.ToDiagnosticId(),
                 Message = "The class 'TypeName' is missing the IValidatable interface",
                 Severity = DiagnosticSeverity.Error,
                 Locations =
