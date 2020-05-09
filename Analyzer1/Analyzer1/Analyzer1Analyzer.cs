@@ -13,22 +13,23 @@ namespace Analyzer1
         internal const string Title = "Missing IValidatable";
         internal const string MessageFormat = "The class '{0}' is missing the IValidatable interface";
         internal const string Category = "CodeRules";
-        const string Description = "The string passed as the 'paramName' argument of ArgumentException constructor "
-                                   + "must be the name of one of the method arguments.\r\n"
-                                   + "It can be either specified directly or using the nameof() operator (C#6 only)";
+
         internal static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
             DiagnosticId.MissingIValidatable.ToDiagnosticId(),
             Title,
             MessageFormat,
             Category,
             DiagnosticSeverity.Error,
-            isEnabledByDefault: true,
-            description: Description);
+            isEnabledByDefault: true);
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         public override void Initialize(AnalysisContext context)
-            => context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ClassDeclaration);
+        {
+            context.EnableConcurrentExecution();
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+            context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ClassDeclaration);
+        }
 
         private void AnalyzeNode(SyntaxNodeAnalysisContext context)
         {
@@ -41,7 +42,8 @@ namespace Analyzer1
                 .OfType<NamespaceDeclarationSyntax>()
                 .FirstOrDefault();
 
-            if (@namespace?.Name is IdentifierNameSyntax identifier && identifier.Identifier.Text != "ConsoleApplication1")
+            if (@namespace?.Name is IdentifierNameSyntax identifier &&
+                identifier.Identifier.Text != "ConsoleApplication1")
                 return;
 
             var isNotValidatable = classDeclaration.AttributeLists
@@ -53,9 +55,9 @@ namespace Analyzer1
             var baseTypes = classDeclaration.BaseList?.Types;
             var simpleBaseTypeSyntaxes = baseTypes?.OfType<SimpleBaseTypeSyntax>().ToArray();
             var implemntsIValidatable = simpleBaseTypeSyntaxes
-                                            ?.Select(x => x.Type)
-                                            .OfType<IdentifierNameSyntax>()
-                                            .Any(x => x.Identifier.Text == "IValidatable") == true;
+                ?.Select(x => x.Type)
+                .OfType<IdentifierNameSyntax>()
+                .Any(x => x.Identifier.Text == "IValidatable") == true;
 
             if (!implemntsIValidatable && !isNotValidatable)
             {
