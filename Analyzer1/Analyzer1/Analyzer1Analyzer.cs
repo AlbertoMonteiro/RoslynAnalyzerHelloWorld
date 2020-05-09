@@ -32,14 +32,27 @@ namespace Analyzer1
 
         private void AnalyzeNode(SyntaxNodeAnalysisContext context)
         {
-            var classDeclarationSyntax = (ClassDeclarationSyntax)context.Node;
+            var classDeclaration = (ClassDeclarationSyntax)context.Node;
+            var identifierText = classDeclaration.Identifier.Text;
+            if (identifierText == "NotValidatableAttribute")
+                return;
 
-            var separatedSyntaxList = classDeclarationSyntax.BaseList?.Types;
-            var any = separatedSyntaxList?.OfType<IdentifierNameSyntax>().Any(x => x.Identifier.Text == "IValidatable") == true;
-            if (!any)
+            var isNotValidatable = classDeclaration.AttributeLists
+                .SelectMany(x => x.Attributes)
+                .Select(x => x.Name)
+                .OfType<IdentifierNameSyntax>()
+                .Any(x => x.Identifier.Text == "NotValidatable");
+
+            var baseTypes = classDeclaration.BaseList?.Types;
+            var simpleBaseTypeSyntaxes = baseTypes?.OfType<SimpleBaseTypeSyntax>().ToArray();
+            var implemntsIValidatable = simpleBaseTypeSyntaxes
+                                            ?.Select(x => x.Type)
+                                            .OfType<IdentifierNameSyntax>()
+                                            .Any(x => x.Identifier.Text == "IValidatable") == true;
+
+            if (!implemntsIValidatable && !isNotValidatable)
             {
-                // For all such symbols, produce a diagnostic.
-                var diagnostic = Diagnostic.Create(Rule, classDeclarationSyntax.Identifier.GetLocation(), classDeclarationSyntax.Identifier.Text);
+                var diagnostic = Diagnostic.Create(Rule, classDeclaration.Identifier.GetLocation(), identifierText);
 
                 context.ReportDiagnostic(diagnostic);
             }

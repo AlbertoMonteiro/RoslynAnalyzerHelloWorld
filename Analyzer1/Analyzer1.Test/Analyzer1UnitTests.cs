@@ -75,6 +75,64 @@ namespace Analyzer1.Test
             VerifyCSharpFix(test, fixtest);
         }
 
+        //Diagnostic and CodeFix both triggered and checked for
+        [TestMethod]
+        public void TestMethod3()
+        {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+    
+    namespace ConsoleApplication1
+    {
+        interface IValidatable
+        {
+        }
+    
+        class TypeName : IValidatable
+        {
+        }
+    }";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
+        //Diagnostic and CodeFix both triggered and checked for
+        [TestMethod]
+        public void TestMethod4()
+        {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+    
+    namespace ConsoleApplication1
+    {
+        [AttributeUsage(AttributeUsage.Class)]
+        public class NotValidatableAttribute : Attribute
+        {
+        }
+
+        interface IValidatable
+        {
+        }
+
+        [NotValidatable]
+        class TypeName
+        {
+        }
+    }";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
             return new Analyzer1CodeFixProvider();
